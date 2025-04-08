@@ -12,7 +12,7 @@
     "api": "npm run build:server && node api/server.js",
     "start:api": "npm run build:server && node api/server.js",
     "start:frontend": "vite",
-    "start": "node api/server.js"
+    "start": "npm run build:server && node api/server.js"
   },
   "dependencies": {
     "cheerio": "1.0.0-rc.12",
