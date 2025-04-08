@@ -1,24 +1,28 @@
 import express from 'express';
+import cors from 'cors';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { analyzeWebsites } from '../dist/lib/scraper.js';
-import cors from 'cors';
-
-const app = express();
-
-// Allow requests from your Netlify frontend
-app.use(cors({
-  origin: 'https://jtreehrealth-crawler.netlify.app',
-  methods: ['GET', 'POST'],
-}));
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
+
+// CORS: Allow requests from your Netlify frontend
+app.use(cors({
+  origin: 'https://jtreehrealth-crawler.netlify.app',
+  methods: ['GET', 'POST'],
+}));
+
 app.use(express.json({ limit: '50mb' }));
 
-// Add error handling middleware
+// Health check route (optional, but useful)
+app.get('/', (req, res) => {
+  res.send('✅ Backend is running at /api/scrape');
+});
+
+// Error handling middleware
 app.use((err, req, res, next) => {
   console.error('Server error:', err);
   res.status(500).json({
@@ -27,7 +31,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Add request logging middleware
+// Request logging
 app.use((req, res, next) => {
   const start = Date.now();
   res.on('finish', () => {
@@ -40,15 +44,14 @@ app.use((req, res, next) => {
 app.post('/api/scrape', async (req, res) => {
   try {
     const { urls, keywords, checkInsurance = true } = req.body;
-    
+
     if (!urls || !keywords || !Array.isArray(urls) || !Array.isArray(keywords)) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         error: 'Invalid request body. Expected urls and keywords arrays.',
         timestamp: new Date().toISOString()
       });
     }
 
-    // Set headers for streaming
     res.setHeader('Content-Type', 'text/plain');
     res.setHeader('Transfer-Encoding', 'chunked');
 
@@ -62,12 +65,11 @@ app.post('/api/scrape', async (req, res) => {
       }
     });
 
-    // Send the final results on a new line
     res.write('\n' + JSON.stringify(results) + '\n');
     res.end();
   } catch (error) {
     console.error('Scraping error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error instanceof Error ? error.message : 'An unknown error occurred',
       timestamp: new Date().toISOString()
     });
@@ -76,20 +78,16 @@ app.post('/api/scrape', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
-try {
-  const server = app.listen(PORT, () => {
-    console.log(`Backend server running on port ${PORT}`);
-  });
+// ✅ Listen on 0.0.0.0 so Render can detect the port
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ Backend server running on port ${PORT}`);
+});
 
-  // Handle graceful shutdown
-  process.on('SIGTERM', () => {
-    console.log('SIGTERM received. Shutting down gracefully...');
-    server.close(() => {
-      console.log('Server closed');
-      process.exit(0);
-    });
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received. Shutting down gracefully...');
+  server.close(() => {
+    console.log('Server closed');
+    process.exit(0);
   });
-} catch (error) {
-  console.error('Failed to start server:', error);
-  process.exit(1);
-}
+});
