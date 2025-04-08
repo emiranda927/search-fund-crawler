@@ -7,6 +7,8 @@ interface AnalyzeOptions {
   onProgress?: (progress: number) => void;
 }
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 export async function analyzeWebsites({
   urls,
   keywords,
@@ -14,7 +16,7 @@ export async function analyzeWebsites({
   onProgress
 }: AnalyzeOptions): Promise<AnalysisResult[]> {
   try {
-    const response = await fetch('/api/scrape', {
+    const response = await fetch(`${backendUrl}/api/scrape`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
