@@ -1,8 +1,10 @@
 import express from 'express';
-import cors from 'cors';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { analyzeWebsites } from '../dist/lib/scraper.js';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const cors = require('cors');
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
