@@ -1,0 +1,19 @@
+# Ignore frontend source files
+src/
+lib/
+.vite/
+.vscode/
+
+# Ignore frontend build tools and configs
+vite.config.ts
+postcss.config.js
+tailwind.config.js
+
+# Ignore local development environment variables
+.env
+.env.local
+.env.development
+.env.production
+
+# Ignore frontend output (just in case)
+dist/assets/
