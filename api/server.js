@@ -2,6 +2,15 @@ import express from 'express';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { analyzeWebsites } from '../dist/lib/scraper.js';
+import cors from 'cors';
+
+const app = express();
+
+// Allow requests from your Netlify frontend
+app.use(cors({
+  origin: 'https://jtreehrealth-crawler.netlify.app',
+  methods: ['GET', 'POST'],
+}));
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
