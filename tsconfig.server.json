@@ -5,7 +5,7 @@
     "moduleResolution": "NodeNext",
     "esModuleInterop": true,
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": ".",
     "strict": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
@@ -13,9 +13,9 @@
     "resolveJsonModule": true
   },
   "include": [
-    "src/lib/scraper.ts",   // ✅ explicitly include scraper
-    "src/types.ts",          // ✅ include types if used by scraper
-    "api/**/*.ts"            // ✅ include backend routes
+    "api/**/*.ts",
+    "src/lib/scraper.ts",
+    "src/types.ts"
   ],
-  "exclude": ["node_modules", "src/lib/api.ts", "src/lib/**/*.test.ts"]
+  "exclude": ["node_modules"]
 }
