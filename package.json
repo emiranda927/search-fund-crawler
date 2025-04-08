@@ -12,14 +12,15 @@
     "api": "npm run build:server && node api/server.js",
     "start:api": "npm run build:server && node api/server.js",
     "start:frontend": "vite",
-    "start": "npm run build:server && node api/server.js"
+    "start": "node api/server.js"
   },
   "dependencies": {
     "cheerio": "1.0.0-rc.12",
     "concurrently": "^8.2.2",
+    "cors": "^2.8.5",
     "express": "^4.18.2",
-    "lucide-react": "^0.344.0",
     "lru-cache": "^10.2.0",
+    "lucide-react": "^0.344.0",
     "p-limit": "^5.0.0",
     "papaparse": "^5.4.1",
     "react": "^18.3.1",
